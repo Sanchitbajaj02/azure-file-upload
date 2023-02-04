@@ -1,112 +1,96 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useAzureFileUpload } from "./useAzureFileUpload";
 
-// Import React FilePond
+// Filepond Plugin imports
 import { FilePond, registerPlugin } from "react-filepond";
-import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
-import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginFileEncode from "filepond-plugin-file-encode";
+import FilePondPluginFilePreview from "filepond-plugin-pdf-preview";
 
-import {
-  BlobClient,
-  BlobServiceClient,
-  ContainerClient,
-} from "@azure/storage-blob";
-
-// import {
-//   BlobServiceClient,
-//   StorageSharedKeyCredential,
-// } from "@azure/storage-blob";
-
-// Import FilePond styles
+// FilePond styles
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
-// Register the plugins
+// Register the plugins for usage
 registerPlugin(
-  FilePondPluginImageExifOrientation,
-  FilePondPluginImagePreview,
   FilePondPluginFileValidateType,
-  FilePondPluginFileEncode
+  FilePondPluginFileEncode,
+  FilePondPluginFilePreview
 );
 
 function App() {
-  const [file, setFile] = useState([]);
-  const [inputFile, setInputFile] = useState(null);
+  const [pdfFile, setpdfFile] = useState([]);
 
-  console.log(file);
+  const filePondPdfRef = useRef(null);
 
-  async function uploadFile() {
-    // NOTE: upload file to azure blob storage using filepond
-    try {
-      let storageAccount = "tcviewstorage";
-      let sasToken =
-        "?sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-01-31T14:55:22Z&st=2023-01-02T06:55:22Z&spr=https,http&sig=l62uQA5pStCpml4Hs%2F5m6A%2FgoFZEOVVIJuNdXeo0B9w%3D";
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const containerName = "resume";
 
-      const blobService = new BlobServiceClient(
-        `https://${storageAccount}.blob.core.windows.net/${sasToken}`
-      );
-
-      // NOTE: enter the container name to connect
-      const containerClient = blobService.getContainerClient("images");
-
-      // NOTE: this will create the container if it does not exist
-      await containerClient.createIfNotExists({
-        access: "container",
-      });
-
-      const blobClient = containerClient.getBlockBlobClient("company-logo.png");
-      console.log(blobClient);
-
-      const options = {
-        blobHTTPHeaders: {
-          blobContentType: file[0].file.type,
-        },
-      };
-
-      // console.log(file);
-
-      blobClient
-        .uploadBrowserData(file[0].file, options)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  }
+    const fileString = await useAzureFileUpload(pdfFile, containerName);
+    console.log("url string:", fileString);
+  };
 
   return (
-    <div>
-      <FilePond
-        checkValidity={true}
-        allowFileTypeValidation={true}
-        allowFileEncode={true}
-        imagePreviewMaxFileSize={"500KB"}
-        acceptedFileTypes={["image/png", "image/jpeg", "image/jpg"]}
-        files={file}
-        onupdatefiles={setFile}
-        allowMultiple={false}
-        maxFiles={1}
-        name="pdf"
-        oninit={() => console.log("FilePond instance has initialised")}
-        labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-      />
-
-      <input
-        type="file"
-        multiple={true}
-        onChange={(e) => {
-          console.log(e.target.files);
-          setInputFile(e.target.files);
+    <main
+      style={{
+        width: "50%",
+        margin: "auto",
+      }}
+    >
+      <h1
+        style={{
+          textAlign: "center",
+          fontSize: "40px",
         }}
-      />
+      >
+        Azure File Upload
+      </h1>
 
-      <button onClick={uploadFile}>Upload</button>
-    </div>
+      <form method="post" onSubmit={handleSubmit}>
+        <FilePond
+          fileSizeBase={1000}
+          checkValidity={true}
+          allowFileTypeValidation={true}
+          allowFileSizeValidation={true}
+          allowFileEncode={true}
+          chunkUploads={true}
+          acceptedFileTypes={["application/pdf"]}
+          files={pdfFile}
+          onupdatefiles={setpdfFile}
+          allowMultiple={false}
+          maxFiles={1}
+          name="files"
+          ref={filePondPdfRef}
+          onaddfile={(error, fileItem) => {
+            if (error) {
+              console.log(error);
+            }
+
+            if (fileItem.file.size > 1000000) {
+              toast.error("File size is too large");
+            }
+          }}
+          oninit={() => console.log("FilePond instance has initialised")}
+          labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+        />
+        <button
+          type="submit"
+          style={{
+            width: "100%",
+            height: "50px",
+            backgroundColor: "#225BD8",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            marginTop: "10px",
+            fontSize: "20px",
+          }}
+        >
+          Submit for file
+        </button>
+      </form>
+    </main>
   );
 }
 
