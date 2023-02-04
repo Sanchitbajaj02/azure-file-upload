@@ -2,8 +2,6 @@
 
 This is a simple example of how to upload a files to Azure Blob Storage using the Azure Blob Storage in React.
 
-<br/>
-
 ## Getting Started
 
 1. Clone the repo
@@ -42,9 +40,7 @@ To learn more about Upload files using Filepond to Azure Blob Storage with React
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
-<br/>
+This project is licensed under the [MIT License](LICENSE), meaning you are free to use it for any purpose, commercial or non-commercial, without any attribution back to me (public domain). If you use it in your project, I'd love to hear about it! (Find me here: [@solitrix02](https://twitter.com/solitrix02))
 
 ## Contribution
 
