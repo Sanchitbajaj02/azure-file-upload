@@ -1,5 +1,9 @@
 # Azure File Upload
 
+[![license MIT](https://img.shields.io/github/license/sanchitbajaj02/azure-file-upload?color=light)](https://github.com/Sanchitbajaj02/azure-file-upload/blob/master/LICENSE)
+[![Issues](https://img.shields.io/github/issues/sanchitbajaj02/azure-file-upload?color=light)](https://github.com/Sanchitbajaj02/azure-file-upload/issues)
+[![Issues](https://img.shields.io/github/issues-pr/sanchitbajaj02/azure-file-upload?color=light)](https://github.com/Sanchitbajaj02/azure-file-upload/issues)
+
 This is a simple example of how to upload a files to Azure Blob Storage using the Azure Blob Storage in React.
 
 ## Getting Started
