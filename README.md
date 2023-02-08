@@ -34,7 +34,7 @@ npm run dev
 
 To learn more about Upload files using Filepond to Azure Blob Storage with React, take a look at the following post:
 
-[Upload files using Filepond to Azure Blob Storage with React](https://solitrix02.hashnode.dev/how-to-work-with-azure-storage-sdk-in-reactjs-6b5b2b2c5c0e)
+[Upload files using Filepond to Azure Blob Storage with React](https://solitrix02.hashnode.dev/upload-files-to-azure-blob-storage)
 
 <br/>
 
